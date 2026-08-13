@@ -1,5 +1,5 @@
 /*
-	InnerGlowFX.cpp
+	InnerGlowEffect.cpp
 
 	Entry point, parameter setup and command dispatch.
 
@@ -11,7 +11,7 @@
 	single output pixel.
 */
 
-#include "InnerGlowFX.h"
+#include "InnerGlowEffect.h"
 #include "GlowRender.h"
 
 #include <algorithm>
@@ -453,7 +453,7 @@ About(
 }
 
 /*
-	!!  KEEP IN SYNC WITH resources/InnerGlowFX_PiPL.r  !!
+	!!  KEEP IN SYNC WITH resources/InnerGlowEffect_PiPL.r  !!
 
 	The out_flags and out_flags2 set below must match AE_Effect_Global_OutFlags
 	and AE_Effect_Global_OutFlags_2 in the PiPL exactly. After Effects reads the

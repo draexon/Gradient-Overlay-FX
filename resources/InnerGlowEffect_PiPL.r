@@ -1,13 +1,13 @@
 /*
-	InnerGlowFX_PiPL.r
+	InnerGlowEffect_PiPL.r
 
-	PiPL resource for Inner Glow FX.
+	PiPL resource for Inner Glow Effect.
 
 	After Effects reads this resource to discover the plug-in. If it is missing
 	or malformed the effect simply will not appear in the Effect menu, with no
 	error shown anywhere.
 
-	!!  KEEP IN SYNC WITH GlobalSetup() IN src/InnerGlowFX.cpp  !!
+	!!  KEEP IN SYNC WITH GlobalSetup() IN src/InnerGlowEffect.cpp  !!
 
 	AE_Effect_Global_OutFlags and AE_Effect_Global_OutFlags_2 below must be the
 	exact numeric equivalent of the out_flags / out_flags2 that GlobalSetup()
@@ -48,7 +48,7 @@ resource 'PiPL' (16000) {
 		},
 		/* [2] */
 		Name {
-			"Inner Glow FX"
+			"Inner Glow Effect"
 		},
 		/* [3] */
 		Category {
@@ -92,7 +92,7 @@ resource 'PiPL' (16000) {
 		},
 		/* [11] */
 		AE_Effect_Match_Name {
-			"DRAEXON InnerGlowFX"
+			"DRAEXON InnerGlowEffect"
 		},
 		/* [12] */
 		AE_Reserved_Info {

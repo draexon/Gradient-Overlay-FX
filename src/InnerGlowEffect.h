@@ -1,7 +1,7 @@
 /*
-	InnerGlowFX.h
+	InnerGlowEffect.h
 
-	Inner Glow FX - After Effects' Inner Glow layer style, as a real effect.
+	Inner Glow Effect - After Effects' Inner Glow layer style, as a real effect.
 
 	After Effects offers Inner Glow only as a Layer Style. Layer Styles always
 	render after every effect on the layer and cannot be reordered, and they are
@@ -10,8 +10,8 @@
 	chain and composites against whatever alpha exists at that point.
 */
 
-#ifndef INNERGLOWFX_H
-#define INNERGLOWFX_H
+#ifndef INNERGLOWEFFECT_H
+#define INNERGLOWEFFECT_H
 
 #include "AEConfig.h"
 #include "entry.h"
@@ -29,8 +29,8 @@
 #define STAGE_VERSION	PF_Stage_RELEASE
 #define BUILD_VERSION	1
 
-#define STR_NAME			"Inner Glow FX"
-#define STR_MATCH_NAME		"DRAEXON InnerGlowFX"
+#define STR_NAME			"Inner Glow Effect"
+#define STR_MATCH_NAME		"DRAEXON InnerGlowEffect"
 #define STR_CATEGORY		"Stylize"
 #define STR_DESCRIPTION		"The Inner Glow layer style as a real effect, so it can be placed anywhere in the effect chain."
 
@@ -125,4 +125,4 @@ DllExport PF_Err EffectMain(
 }
 #endif
 
-#endif	// INNERGLOWFX_H
+#endif	// INNERGLOWEFFECT_H

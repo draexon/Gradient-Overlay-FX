@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.20)
 set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "macOS architectures for the universal binary")
 set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum supported macOS version")
 
-project(InnerGlowFX
+project(InnerGlowEffect
     VERSION 1.0.0
     DESCRIPTION "The Inner Glow layer style as a real After Effects effect"
     LANGUAGES CXX)
@@ -62,21 +62,21 @@ message(STATUS "After Effects SDK: ${AE_SDK_PATH}")
 # The plug-in target
 # ---------------------------------------------------------------------------
 
-add_library(InnerGlowFX MODULE
-    src/InnerGlowFX.cpp
-    src/InnerGlowFX.h
+add_library(InnerGlowEffect MODULE
+    src/InnerGlowEffect.cpp
+    src/InnerGlowEffect.h
     src/GlowRender.cpp
     src/GlowRender.h)
 
-target_include_directories(InnerGlowFX PRIVATE
+target_include_directories(InnerGlowEffect PRIVATE
     "${AE_SDK_HEADERS}"
     "${AE_SDK_HEADERS}/SP"
     "${AE_SDK_UTIL}"
     "${AE_SDK_RESOURCES}")
 
-set_target_properties(InnerGlowFX PROPERTIES
+set_target_properties(InnerGlowEffect PROPERTIES
     PREFIX ""
-    OUTPUT_NAME "InnerGlowFX")
+    OUTPUT_NAME "InnerGlowEffect")
 
 # ---------------------------------------------------------------------------
 # Windows: x64 DLL renamed to .aex, with the PiPL compiled in as a resource
@@ -87,13 +87,13 @@ if(WIN32)
         message(FATAL_ERROR "Windows builds are x64 only. Configure with -A x64.")
     endif()
 
-    target_compile_definitions(InnerGlowFX PRIVATE MSWindows WIN32 _WINDOWS)
+    target_compile_definitions(InnerGlowEffect PRIVATE MSWindows WIN32 _WINDOWS)
 
     # /MT so the plug-in does not need a VC++ redistributable on the user's machine.
-    set_property(TARGET InnerGlowFX PROPERTY
+    set_property(TARGET InnerGlowEffect PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-    set_target_properties(InnerGlowFX PROPERTIES SUFFIX ".aex")
+    set_target_properties(InnerGlowEffect PROPERTIES SUFFIX ".aex")
 
     set(PIPL_TOOL "${AE_SDK_RESOURCES}/PiPLtool.exe")
     if(NOT EXISTS "${PIPL_TOOL}")
@@ -103,11 +103,11 @@ if(WIN32)
             "show the effect at all.")
     endif()
 
-    set(PIPL_SRC "${CMAKE_CURRENT_SOURCE_DIR}/resources/InnerGlowFX_PiPL.r")
+    set(PIPL_SRC "${CMAKE_CURRENT_SOURCE_DIR}/resources/InnerGlowEffect_PiPL.r")
     set(PIPL_DIR "${CMAKE_CURRENT_BINARY_DIR}/pipl")
-    set(PIPL_RR  "${PIPL_DIR}/InnerGlowFX_PiPL.rr")
-    set(PIPL_RRC "${PIPL_DIR}/InnerGlowFX_PiPL.rrc")
-    set(PIPL_RC  "${PIPL_DIR}/InnerGlowFX_PiPL.rc")
+    set(PIPL_RR  "${PIPL_DIR}/InnerGlowEffect_PiPL.rr")
+    set(PIPL_RRC "${PIPL_DIR}/InnerGlowEffect_PiPL.rrc")
+    set(PIPL_RC  "${PIPL_DIR}/InnerGlowEffect_PiPL.rc")
 
     # Three stages, exactly as the SDK sample projects do it:
     #   1. run the C preprocessor over the .r         -> .rr
@@ -127,7 +127,7 @@ if(WIN32)
         COMMENT "Compiling the PiPL resource"
         VERBATIM)
 
-    target_sources(InnerGlowFX PRIVATE "${PIPL_RC}")
+    target_sources(InnerGlowEffect PRIVATE "${PIPL_RC}")
     set_source_files_properties("${PIPL_RC}" PROPERTIES GENERATED TRUE)
 
     set(AE_PLUGIN_INSTALL_DIR
@@ -140,11 +140,11 @@ endif()
 # ---------------------------------------------------------------------------
 
 if(APPLE)
-    target_compile_definitions(InnerGlowFX PRIVATE MacOS)
+    target_compile_definitions(InnerGlowEffect PRIVATE MacOS)
 
-    set(MACOSX_BUNDLE_EXECUTABLE_NAME "InnerGlowFX")
-    set(MACOSX_BUNDLE_BUNDLE_NAME "InnerGlowFX")
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.draexon.InnerGlowFX")
+    set(MACOSX_BUNDLE_EXECUTABLE_NAME "InnerGlowEffect")
+    set(MACOSX_BUNDLE_BUNDLE_NAME "InnerGlowEffect")
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.draexon.InnerGlowEffect")
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
     set(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2026 DRAEXON")
@@ -154,7 +154,7 @@ if(APPLE)
         "${CMAKE_CURRENT_BINARY_DIR}/Info.plist"
         @ONLY)
 
-    set_target_properties(InnerGlowFX PROPERTIES
+    set_target_properties(InnerGlowEffect PROPERTIES
         BUNDLE TRUE
         BUNDLE_EXTENSION "plugin"
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist")
@@ -168,15 +168,15 @@ if(APPLE)
             "After Effects will not show the effect at all.")
     endif()
 
-    add_custom_command(TARGET InnerGlowFX POST_BUILD
+    add_custom_command(TARGET InnerGlowEffect POST_BUILD
         COMMAND "${CMAKE_COMMAND}" -E make_directory
-                "$<TARGET_BUNDLE_CONTENT_DIR:InnerGlowFX>/Resources"
+                "$<TARGET_BUNDLE_CONTENT_DIR:InnerGlowEffect>/Resources"
         COMMAND "${REZ_EXECUTABLE}"
-                -o "$<TARGET_BUNDLE_CONTENT_DIR:InnerGlowFX>/Resources/InnerGlowFX.rsrc"
+                -o "$<TARGET_BUNDLE_CONTENT_DIR:InnerGlowEffect>/Resources/InnerGlowEffect.rsrc"
                 -d __MACH__ -useDF
                 -i "${AE_SDK_HEADERS}"
                 -i "${AE_SDK_RESOURCES}"
-                "${CMAKE_CURRENT_SOURCE_DIR}/resources/InnerGlowFX_PiPL.r"
+                "${CMAKE_CURRENT_SOURCE_DIR}/resources/InnerGlowEffect_PiPL.r"
         COMMENT "Compiling the PiPL resource"
         VERBATIM)
 
@@ -189,7 +189,7 @@ endif()
 # install
 # ---------------------------------------------------------------------------
 
-install(TARGETS InnerGlowFX
+install(TARGETS InnerGlowEffect
     LIBRARY DESTINATION "${AE_PLUGIN_INSTALL_DIR}"
     BUNDLE  DESTINATION "${AE_PLUGIN_INSTALL_DIR}")
 

@@ -1,5 +1,5 @@
 @echo off
-rem Configure and build Inner Glow FX on Windows (x64).
+rem Configure and build Inner Glow Effect on Windows (x64).
 rem
 rem Requires: CMake 3.20+, Visual Studio 2022 with the Desktop C++ workload,
 rem and AE_SDK_PATH pointing at the After Effects SDK root.
@@ -41,5 +41,5 @@ if /i "%2"=="install" (
 )
 
 echo.
-echo Built: build\%CONFIG%\InnerGlowFX.aex
+echo Built: build\%CONFIG%\InnerGlowEffect.aex
 echo.

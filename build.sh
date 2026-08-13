@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Configure and build Inner Glow FX on macOS (universal arm64 + x86_64).
+# Configure and build Inner Glow Effect on macOS (universal arm64 + x86_64).
 #
 # Requires: CMake 3.20+, Xcode command line tools (for clang and Rez),
 # and AE_SDK_PATH pointing at the After Effects SDK root.
@@ -39,5 +39,5 @@ if [ "${2:-}" = "install" ]; then
 fi
 
 echo
-echo "Built: build/$CONFIG/InnerGlowFX.plugin"
+echo "Built: build/$CONFIG/InnerGlowEffect.plugin"
 echo

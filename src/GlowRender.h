@@ -1,7 +1,7 @@
 /*
 	GlowRender.h
 
-	Glow field generation and blend modes for Inner Glow FX.
+	Glow field generation and blend modes for Inner Glow Effect.
 
 	Everything here is a pure function of its arguments. No After Effects types,
 	no globals, no caches, no static state. That is deliberate:

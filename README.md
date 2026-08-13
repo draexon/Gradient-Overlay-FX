@@ -1,4 +1,4 @@
-# Inner Glow FX
+# Inner Glow Effect
 
 After Effects' Inner Glow is a **Layer Style**, not an effect. That means two things
 get in the way:
@@ -7,11 +7,11 @@ get in the way:
   reordered. Whatever your effect stack does, the glow lands on top of it.
 - They live buried in the timeline under Layer Styles, not in Effect Controls.
 
-Inner Glow FX does the same job as a real effect. It sits in the effect stack, so it
+Inner Glow Effect does the same job as a real effect. It sits in the effect stack, so it
 can be placed anywhere in the chain, and it composites against whatever alpha exists
 at that point rather than against the finished layer.
 
-Effect menu location: **Effect > Stylize > Inner Glow FX**
+Effect menu location: **Effect > Stylize > Inner Glow Effect**
 
 ---
 
@@ -116,7 +116,7 @@ build.bat
 That configures and builds Release. `build.bat Debug` builds Debug. The result is:
 
 ```
-build\Release\InnerGlowFX.aex
+build\Release\InnerGlowEffect.aex
 ```
 
 ### macOS
@@ -128,7 +128,7 @@ build\Release\InnerGlowFX.aex
 The result is:
 
 ```
-build/Release/InnerGlowFX.plugin
+build/Release/InnerGlowEffect.plugin
 ```
 
 ### Doing it manually
@@ -178,7 +178,7 @@ step.
 2. Create a comp with any layer that has transparency — a solid with a mask, a shape
    layer, or text works well. A full-frame solid with no transparency will show
    nothing, because an inner glow needs an alpha edge to grow from.
-3. Look for **Effect > Stylize > Inner Glow FX**. If it is not in the menu, the PiPL
+3. Look for **Effect > Stylize > Inner Glow Effect**. If it is not in the menu, the PiPL
    did not build or the binary is not in a folder After Effects scans.
 4. Apply it. You should see a soft glow hugging the inside of the layer's alpha edge.
 5. Push **Size** up to make the effect obvious, then try **Source > Center** to flip
@@ -252,8 +252,8 @@ unclamped so overrange values survive.
 
 ## A warning worth repeating
 
-The out-flags in `src/InnerGlowFX.cpp` (`GlobalSetup`) and the ones in
-`resources/InnerGlowFX_PiPL.r` must stay identical. After Effects reads the PiPL when
+The out-flags in `src/InnerGlowEffect.cpp` (`GlobalSetup`) and the ones in
+`resources/InnerGlowEffect_PiPL.r` must stay identical. After Effects reads the PiPL when
 it scans the plug-in and **never warns** when the two disagree; it just misbehaves
 quietly, with the wrong bit depth, no smart render, or threading crashes. Both files
 carry a comment saying so, with the bit-by-bit breakdown.
@@ -268,7 +268,7 @@ out_flags2 = 0x08001400   SUPPORTS_SMART_RENDER | FLOAT_COLOR_AWARE | SUPPORTS_T
 ## Do not change the match name
 
 ```
-DRAEXON InnerGlowFX
+DRAEXON InnerGlowEffect
 ```
 
 After Effects identifies the effect by this string. Changing it after release orphans
@@ -285,11 +285,11 @@ CMakeLists.txt                      one project, both platforms
 build.bat                           Windows one-liner
 build.sh                            macOS one-liner
 src/
-  InnerGlowFX.h
-  InnerGlowFX.cpp                   entry point, param setup, command dispatch
+  InnerGlowEffect.h
+  InnerGlowEffect.cpp                   entry point, param setup, command dispatch
   GlowRender.h
   GlowRender.cpp                    glow field and blend modes, pure functions
 resources/
-  InnerGlowFX_PiPL.r                PiPL resource, both platforms
+  InnerGlowEffect_PiPL.r                PiPL resource, both platforms
   Info.plist.in                     macOS bundle template
 ```
