@@ -47,8 +47,12 @@ enum {
 	IGFX_BLEND_MODE,
 	IGFX_OPACITY,
 	IGFX_NOISE,
+	IGFX_COLOR_TYPE,
 	IGFX_COLOR,
 	IGFX_COLOR_OPACITY,
+	IGFX_END_COLOR,
+	IGFX_GRADIENT_MIDPOINT,
+	IGFX_GRADIENT_SMOOTHNESS,
 	IGFX_TECHNIQUE,
 	IGFX_SOURCE,
 	IGFX_CHOKE,
@@ -80,6 +84,10 @@ enum {
 #define IGFX_SOURCE_COUNT		2
 #define IGFX_SOURCE_DFLT		2		/* Edge */
 
+#define IGFX_COLOR_TYPE_ITEMS	"Single Color|Gradient"
+#define IGFX_COLOR_TYPE_COUNT	2
+#define IGFX_COLOR_TYPE_DFLT	1		/* Single Color */
+
 #define IGFX_OPACITY_MIN		0.0
 #define IGFX_OPACITY_MAX		100.0
 #define IGFX_OPACITY_DFLT		75.0
@@ -104,10 +112,24 @@ enum {
 #define IGFX_RANGE_MAX			100.0
 #define IGFX_RANGE_DFLT			50.0
 
+#define IGFX_GRAD_MIDPOINT_MIN	0.0
+#define IGFX_GRAD_MIDPOINT_MAX	100.0
+#define IGFX_GRAD_MIDPOINT_DFLT	50.0
+
+#define IGFX_GRAD_SMOOTH_MIN	0.0
+#define IGFX_GRAD_SMOOTH_MAX	100.0
+#define IGFX_GRAD_SMOOTH_DFLT	100.0
+
 /* The layer style's default glow colour. */
 #define IGFX_COLOR_RED_DFLT		255
 #define IGFX_COLOR_GREEN_DFLT	255
 #define IGFX_COLOR_BLUE_DFLT	190
+
+/* Where the gradient lands once the glow has faded out. Warm enough that
+   switching Color Type to Gradient shows an obvious difference. */
+#define IGFX_END_COLOR_RED_DFLT		255
+#define IGFX_END_COLOR_GREEN_DFLT	128
+#define IGFX_END_COLOR_BLUE_DFLT	0
 
 #ifdef __cplusplus
 extern "C" {

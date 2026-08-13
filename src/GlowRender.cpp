@@ -395,6 +395,7 @@ void BuildGlowField(
 	int					height,
 	const GlowSettings	&settings,
 	float				*fieldP,
+	float				*positionP,
 	float				*scratch)
 {
 	const int total = width * height;
@@ -407,6 +408,11 @@ void BuildGlowField(
 	if (settings.sizePx < 0.5f) {
 		for (int i = 0; i < total; ++i) {
 			fieldP[i] = 0.0f;
+		}
+		if (positionP) {
+			for (int i = 0; i < total; ++i) {
+				positionP[i] = 0.0f;
+			}
 		}
 		return;
 	}
@@ -523,6 +529,23 @@ void BuildGlowField(
 		}
 	}
 
+	/*
+		The falloff position is simply the complement of the coverage: where the
+		glow is at full strength the gradient is at its start, and where the
+		glow has faded out the gradient has reached its end. That holds for both
+		Source settings, because Center already inverted the coverage above.
+
+		This is captured after Range and before Noise on purpose. Range decides
+		which stretch of the falloff the glow occupies, so it should carry the
+		gradient with it. Noise is a per-pixel dither on strength alone and must
+		not scramble which colour a pixel gets.
+	*/
+	if (positionP) {
+		for (int i = 0; i < total; ++i) {
+			positionP[i] = 1.0f - fieldP[i];
+		}
+	}
+
 	// Noise last, so the blur above cannot smooth it away.
 	if (settings.noise > 0.0f) {
 		for (int y = 0; y < height; ++y) {
@@ -636,10 +659,54 @@ Rgb BlendPixel(int mode, const Rgb &base, const Rgb &src)
 	}
 }
 
+float MidpointExponent(float midpointPercent)
+{
+	/*
+		The same trick Photoshop's gradient midpoint uses: raise the coordinate
+		to a power chosen so the midpoint position lands on exactly 0.5. The
+		clamp keeps the logarithm, and the resulting exponent, finite at the
+		ends of the slider.
+	*/
+	float normalised = midpointPercent * 0.01f;
+
+	if (normalised < 0.001f) {
+		normalised = 0.001f;
+	} else if (normalised > 0.999f) {
+		normalised = 0.999f;
+	}
+
+	return std::log(0.5f) / std::log(normalised);
+}
+
+Rgb SampleGlowColor(const CompositeSettings &settings, float position)
+{
+	if (!settings.useGradient) {
+		return settings.colorA;
+	}
+
+	float t = Clamp01(position);
+
+	// Midpoint first, so the handoff lands where the control says it should.
+	if (t > 0.0f && t < 1.0f &&
+		std::fabs(settings.midpointExponent - 1.0f) > 1.0e-4f) {
+		t = std::pow(t, settings.midpointExponent);
+	}
+
+	// Smoothness eases the ramp. Smoothstep leaves 0.5 at 0.5, so it softens
+	// the transition without dragging the midpoint back toward the centre.
+	if (settings.smoothness > 0.0f) {
+		const float eased = t * t * (3.0f - 2.0f * t);
+		t = Lerp(t, eased, settings.smoothness);
+	}
+
+	return LerpRgb(settings.colorA, settings.colorB, t);
+}
+
 Rgb CompositePixel(
 	const CompositeSettings	&settings,
 	const Rgb				&base,
 	float					glow,
+	float					position,
 	int						layerX,
 	int						layerY)
 {
@@ -652,13 +719,15 @@ Rgb CompositePixel(
 		coverage = 1.0f;
 	}
 
+	const Rgb source = SampleGlowColor(settings, position);
+
 	if (settings.blendMode == kBlend_DISSOLVE) {
 		// All or nothing per pixel, dithered against a hash pinned to the layer
 		// so the pattern does not crawl when the render region moves.
-		return (HashUnit(layerX, layerY) < coverage) ? settings.color : base;
+		return (HashUnit(layerX, layerY) < coverage) ? source : base;
 	}
 
-	const Rgb blended = BlendPixel(settings.blendMode, base, settings.color);
+	const Rgb blended = BlendPixel(settings.blendMode, base, source);
 
 	Rgb out;
 	out.r = Lerp(base.r, blended.r, coverage);

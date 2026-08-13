@@ -86,19 +86,38 @@ struct GlowSettings {
 	int		originY;
 };
 
+enum ColorType {
+	kColorType_SINGLE = 1,
+	kColorType_GRADIENT
+};
+
 /* The colour side of the composite, resolved once per render call. */
 struct CompositeSettings {
-	Rgb		color;
+	Rgb		colorA;			// the single colour, and the gradient's start
+	Rgb		colorB;			// the gradient's end; ignored when not gradient
 	float	amount;			// Opacity * Color Opacity, 0..1
 	int		blendMode;		// BlendMode
+	bool	useGradient;
+	float	midpointExponent;	// precomputed, see MidpointExponent()
+	float	smoothness;		// 0..1, eases the ramp between the two colours
 };
+
+/*
+	Converts the Gradient Midpoint control (0..100) into the exponent that
+	SampleGradient raises its coordinate to. A midpoint of 50 gives 1.0, which
+	leaves the ramp linear.
+*/
+float MidpointExponent(float midpointPercent);
 
 /*
 	Turns an alpha plane into a glow coverage field.
 
-	alphaP  in,  width * height floats, 0..1
-	fieldP  out, width * height floats, 0..1
-	scratch in,  width * height floats of workspace
+	alphaP    in,  width * height floats, 0..1
+	fieldP    out, width * height floats, 0..1, how strongly a pixel glows
+	positionP out, width * height floats, 0..1, how far along the falloff a
+	               pixel sits, which is what a gradient is painted across.
+	               Pass NULL when the glow is a single colour and it is skipped.
+	scratch   in,  width * height floats of workspace
 
 	The field is not masked by alpha. Pixels outside the shape are left at
 	whatever the falloff says, because the caller re-premultiplies by the
@@ -112,6 +131,7 @@ void BuildGlowField(
 	int				height,
 	const GlowSettings &settings,
 	float			*fieldP,
+	float			*positionP,
 	float			*scratch);
 
 /*
@@ -120,9 +140,16 @@ void BuildGlowField(
 */
 Rgb BlendPixel(int mode, const Rgb &base, const Rgb &src);
 
+/* Picks the glow colour for one pixel: the single colour, or the gradient
+   sampled at the given falloff position. */
+Rgb SampleGlowColor(const CompositeSettings &settings, float position);
+
 /*
 	The whole per-pixel colour pipeline on straight colour: blend the glow
 	colour over the base, scaled by the glow coverage and the opacity settings.
+
+	glow is the coverage from fieldP, position the falloff coordinate from
+	positionP. position is ignored when the glow is a single colour.
 
 	layerX and layerY are layer-space coordinates, used only so that the
 	Dissolve mode's dither pattern stays pinned to the layer instead of
@@ -134,6 +161,7 @@ Rgb CompositePixel(
 	const CompositeSettings &settings,
 	const Rgb		&base,
 	float			glow,
+	float			position,
 	int				layerX,
 	int				layerY);
 
