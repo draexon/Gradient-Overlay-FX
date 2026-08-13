@@ -17,5 +17,10 @@ xcuserdata/
 *.exp
 *.lib
 
+# ...except the ready-to-download build in dist/, which is committed on purpose
+# so people who do not build from source can grab it straight from the repo.
+!dist/*.aex
+!dist/*.plugin
+
 # The After Effects SDK is never vendored here. It is located through
 # AE_SDK_PATH. See README.md.

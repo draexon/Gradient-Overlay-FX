@@ -17,6 +17,48 @@ By [draexon](https://github.com/draexon) · [github.com/draexon/Inner-Glow-Effec
 
 ---
 
+## Install (no coding needed)
+
+Download **[dist/InnerGlowEffect.aex](dist/InnerGlowEffect.aex)** — click the file, then
+the download button. You do not need to build anything.
+
+### Windows
+
+1. **Quit After Effects.** It locks the plug-in file while it's open.
+2. Copy `InnerGlowEffect.aex` into:
+   ```
+   C:\Program Files\Adobe\Adobe After Effects 2025\Support Files\Plug-ins\Effects\
+   ```
+   Windows will ask for administrator permission. That's expected, it's a
+   Program Files folder.
+3. Reopen After Effects. The effect is under **Effect > Stylize > Inner Glow Effect**.
+
+Use your own After Effects version number in that path if it isn't 2025.
+
+### macOS
+
+There is **no macOS build yet.** The project is written to build universal on macOS,
+but it has never been compiled or tested on one, so nothing is shipped. Building it
+yourself is covered further down.
+
+When a macOS build does exist, the steps are the same (drop the `.plugin` bundle into
+`/Applications/Adobe After Effects <version>/Plug-ins/Effects/`), plus one extra:
+macOS quarantines downloaded plug-ins that aren't signed and notarised, and After
+Effects will refuse to load it with no error shown. Clearing that needs:
+
+```bash
+xattr -dr com.apple.quarantine "/Applications/Adobe After Effects 2025/Plug-ins/Effects/InnerGlowEffect.plugin"
+```
+
+### It doesn't show up in the menu
+
+- After Effects was open while you copied the file. Quit it fully and copy again.
+- The copy silently failed because you didn't approve the admin prompt. Check the
+  file is really in the folder.
+- You have a different After Effects version, so the path is wrong.
+
+---
+
 ## Parameters
 
 Matching the Inner Glow layer style, in the same order.
