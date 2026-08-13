@@ -130,6 +130,12 @@ if(WIN32)
     target_sources(InnerGlowEffect PRIVATE "${PIPL_RC}")
     set_source_files_properties("${PIPL_RC}" PROPERTIES GENERATED TRUE)
 
+    # Stamps author, copyright and project URL into the binary's Properties
+    # dialog. Hand-written, so it is compiled by the resource compiler directly
+    # rather than going through PiPLtool.
+    target_sources(InnerGlowEffect PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/resources/InnerGlowEffect_Version.rc")
+
     set(AE_PLUGIN_INSTALL_DIR
         "C:/Program Files/Adobe/Adobe After Effects 2025/Support Files/Plug-ins/Effects"
         CACHE PATH "Folder the built plug-in is copied into by the install target")
@@ -147,7 +153,7 @@ if(APPLE)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.draexon.InnerGlowEffect")
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
-    set(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2026 DRAEXON")
+    set(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2026 draexon. MIT License.")
 
     configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/Info.plist.in"

@@ -3,6 +3,9 @@
 
 	Glow field generation and blend modes for Inner Glow Effect.
 
+	Copyright (c) 2026 draexon. MIT License, see LICENSE.
+	https://github.com/draexon/Inner-Glow-Effect
+
 	Everything here is a pure function of its arguments. No After Effects types,
 	no globals, no caches, no static state. That is deliberate:
 	PF_OutFlag2_SUPPORTS_THREADED_RENDERING means After Effects may drive the

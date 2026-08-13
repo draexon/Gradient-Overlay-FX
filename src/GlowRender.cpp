@@ -1,6 +1,9 @@
 /*
 	GlowRender.cpp
 
+	Copyright (c) 2026 draexon. MIT License, see LICENSE.
+	https://github.com/draexon/Inner-Glow-Effect
+
 	Glow field generation and blend modes. See GlowRender.h for why nothing
 	here holds state.
 */

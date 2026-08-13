@@ -1,0 +1,52 @@
+/*
+	InnerGlowEffect_Version.rc
+
+	Windows version resource.
+
+	This is what puts authorship inside the binary rather than only in the
+	repository. Right-click InnerGlowEffect.aex, Properties, Details, and these
+	fields are what show up.
+
+	It is attribution, not protection. Anyone holding the file can edit these
+	strings with a resource editor. What it does buy is that stripping the name
+	becomes a deliberate act rather than an oversight.
+
+	Keep FILEVERSION and PRODUCTVERSION in step with the version macros in
+	src/InnerGlowEffect.h and with AE_Effect_Version in the PiPL.
+*/
+
+#include <winver.h>
+
+VS_VERSION_INFO VERSIONINFO
+	FILEVERSION		1,0,0,1
+	PRODUCTVERSION	1,0,0,1
+	FILEFLAGSMASK	VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+	FILEFLAGS		VS_FF_DEBUG
+#else
+	FILEFLAGS		0x0L
+#endif
+	FILEOS			VOS__WINDOWS32
+	FILETYPE		VFT_DLL
+	FILESUBTYPE		VFT2_UNKNOWN
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904b0"		/* US English, Unicode */
+		BEGIN
+			VALUE "CompanyName",		"draexon"
+			VALUE "FileDescription",	"Inner Glow Effect for Adobe After Effects"
+			VALUE "FileVersion",		"1.0.0.1"
+			VALUE "InternalName",		"InnerGlowEffect"
+			VALUE "LegalCopyright",		"Copyright (c) 2026 draexon. MIT License."
+			VALUE "OriginalFilename",	"InnerGlowEffect.aex"
+			VALUE "ProductName",		"Inner Glow Effect"
+			VALUE "ProductVersion",		"1.0.0"
+			VALUE "Comments",			"https://github.com/draexon/Inner-Glow-Effect"
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x409, 1200
+	END
+END

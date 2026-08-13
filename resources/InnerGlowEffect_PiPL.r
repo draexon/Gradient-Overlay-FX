@@ -3,6 +3,9 @@
 
 	PiPL resource for Inner Glow Effect.
 
+	Copyright (c) 2026 draexon. MIT License, see LICENSE.
+	https://github.com/draexon/Inner-Glow-Effect
+
 	After Effects reads this resource to discover the plug-in. If it is missing
 	or malformed the effect simply will not appear in the Effect menu, with no
 	error shown anywhere.
@@ -97,6 +100,10 @@ resource 'PiPL' (16000) {
 		/* [12] */
 		AE_Reserved_Info {
 			8
+		},
+		/* [13] */
+		AE_Effect_Support_URL {
+			"https://github.com/draexon/Inner-Glow-Effect"
 		}
 	}
 };

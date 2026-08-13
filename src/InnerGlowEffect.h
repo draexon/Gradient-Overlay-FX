@@ -3,6 +3,9 @@
 
 	Inner Glow Effect - After Effects' Inner Glow layer style, as a real effect.
 
+	Copyright (c) 2026 draexon. MIT License, see LICENSE.
+	https://github.com/draexon/Inner-Glow-Effect
+
 	After Effects offers Inner Glow only as a Layer Style. Layer Styles always
 	render after every effect on the layer and cannot be reordered, and they are
 	buried in the timeline rather than sitting in Effect Controls. This plug-in
@@ -33,6 +36,11 @@
 #define STR_MATCH_NAME		"DRAEXON InnerGlowEffect"
 #define STR_CATEGORY		"Stylize"
 #define STR_DESCRIPTION		"The Inner Glow layer style as a real effect, so it can be placed anywhere in the effect chain."
+
+#define STR_AUTHOR			"draexon"
+#define STR_SUPPORT_URL		"https://github.com/draexon/Inner-Glow-Effect"
+#define STR_COPYRIGHT		"Copyright (c) 2026 draexon"
+#define STR_LICENSE			"Licensed under the MIT License"
 
 /*
 	Parameter indices.

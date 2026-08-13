@@ -13,6 +13,8 @@ at that point rather than against the finished layer.
 
 Effect menu location: **Effect > Stylize > Inner Glow Effect**
 
+By [draexon](https://github.com/draexon) · [github.com/draexon/Inner-Glow-Effect](https://github.com/draexon/Inner-Glow-Effect)
+
 ---
 
 ## Parameters
@@ -305,6 +307,7 @@ removed.
 
 ```
 CMakeLists.txt                      one project, both platforms
+LICENSE                             MIT
 build.bat                           Windows one-liner
 build.sh                            macOS one-liner
 src/
@@ -313,6 +316,34 @@ src/
   GlowRender.h
   GlowRender.cpp                    glow field and blend modes, pure functions
 resources/
-  InnerGlowEffect_PiPL.r                PiPL resource, both platforms
+  InnerGlowEffect_PiPL.r            PiPL resource, both platforms
+  InnerGlowEffect_Version.rc        Windows version resource
   Info.plist.in                     macOS bundle template
 ```
+
+---
+
+## Licence and credit
+
+MIT. See [LICENSE](LICENSE). Use it, change it, ship it, sell it. The one condition
+is that the copyright notice travels with any copy or substantial portion.
+
+Built by **draexon** — <https://github.com/draexon/Inner-Glow-Effect>
+
+Authorship is recorded in four places so it survives being passed around:
+
+| Where | How to see it |
+|---|---|
+| Windows version resource | Right-click `InnerGlowEffect.aex` → Properties → Details |
+| About box | Effect Controls → the effect's menu → About |
+| PiPL support URL | After Effects surfaces it for the effect |
+| Match name | `DRAEXON InnerGlowEffect`, stored in every project that uses it |
+
+To be clear about what that is and is not: it is attribution, not protection. Anyone
+holding the binary can edit those strings, and MIT permits closed commercial forks
+outright. The only thing that cryptographically proves who built a given binary is
+code signing, an Authenticode certificate on Windows or a Developer ID on macOS.
+Neither is set up here.
+
+The match name is the stubborn one. Changing it orphans the effect in every project
+that already uses it, so a rebrand is not free.

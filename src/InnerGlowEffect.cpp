@@ -1,6 +1,9 @@
 /*
 	InnerGlowEffect.cpp
 
+	Copyright (c) 2026 draexon. MIT License, see LICENSE.
+	https://github.com/draexon/Inner-Glow-Effect
+
 	Entry point, parameter setup and command dispatch.
 
 	The glow is a neighbourhood effect: a pixel's result depends on how far it
@@ -471,11 +474,14 @@ About(
 	PF_LayerDef		*output)
 {
 	PF_SPRINTF(out_data->return_msg,
-			   "%s %d.%d\r\r%s",
+			   "%s %d.%d\r\rby %s\r%s\r\r%s\r%s",
 			   STR_NAME,
 			   MAJOR_VERSION,
 			   MINOR_VERSION,
-			   STR_DESCRIPTION);
+			   STR_AUTHOR,
+			   STR_SUPPORT_URL,
+			   STR_DESCRIPTION,
+			   STR_COPYRIGHT ". " STR_LICENSE ".");
 
 	return PF_Err_NONE;
 }
@@ -854,7 +860,7 @@ PF_Err PluginDataEntryFunction2(
 		STR_CATEGORY,
 		AE_RESERVED_INFO,
 		"EffectMain",
-		"");
+		STR_SUPPORT_URL);
 
 	return result;
 }
