@@ -146,9 +146,19 @@ void ResolveContext(
 	const float colorOpacity =
 		static_cast<float>(params[IGFX_COLOR_OPACITY]->u.fs_d.value) * 0.01f;
 
-	ctx.composite.color = ResolveColor(in_data, params[IGFX_COLOR]);
+	ctx.composite.colorA = ResolveColor(in_data, params[IGFX_COLOR]);
+	ctx.composite.colorB = ResolveColor(in_data, params[IGFX_END_COLOR]);
 	ctx.composite.amount = opacity * colorOpacity;
 	ctx.composite.blendMode = params[IGFX_BLEND_MODE]->u.pd.value;
+
+	ctx.composite.useGradient =
+		(params[IGFX_COLOR_TYPE]->u.pd.value == igfx::kColorType_GRADIENT);
+
+	ctx.composite.midpointExponent = igfx::MidpointExponent(
+		static_cast<float>(params[IGFX_GRADIENT_MIDPOINT]->u.fs_d.value));
+
+	ctx.composite.smoothness =
+		static_cast<float>(params[IGFX_GRADIENT_SMOOTHNESS]->u.fs_d.value) * 0.01f;
 }
 
 /* How far outside the requested output rect the input has to reach for the
@@ -222,6 +232,7 @@ void CompositeWorld(
 	int						layerOriginX,
 	int						layerOriginY,
 	const float				*fieldP,
+	const float				*positionP,
 	const RenderContext		&ctx,
 	float					maxValue,
 	bool					clampResult)
@@ -240,6 +251,9 @@ void CompositeWorld(
 		const PixelT *inRowP = rowInside ? ConstRow<PixelT>(inputP, iy) : NULL;
 		const float *fieldRowP = rowInside
 			? fieldP + static_cast<size_t>(iy) * inWidth
+			: NULL;
+		const float *positionRowP = (rowInside && positionP)
+			? positionP + static_cast<size_t>(iy) * inWidth
 			: NULL;
 
 		for (int x = 0; x < outWidth; ++x) {
@@ -279,6 +293,7 @@ void CompositeWorld(
 			const igfx::Rgb shaded = igfx::CompositePixel(ctx.composite,
 														  base,
 														  fieldRowP[ix],
+														  positionRowP ? positionRowP[ix] : 0.0f,
 														  layerOriginX + x,
 														  layerOriginY + y);
 
@@ -347,15 +362,24 @@ PF_Err RenderGlow(
 
 	std::vector<float> alpha;
 	std::vector<float> field;
+	std::vector<float> position;
 	std::vector<float> scratch;
 
 	try {
 		alpha.resize(pixelCount);
 		field.resize(pixelCount);
 		scratch.resize(pixelCount);
+
+		/* Only a gradient needs to know where along the falloff each pixel
+		   sits, so a single colour skips the buffer entirely. */
+		if (ctx.composite.useGradient) {
+			position.resize(pixelCount);
+		}
 	} catch (const std::bad_alloc &) {
 		return PF_Err_OUT_OF_MEMORY;
 	}
+
+	float *positionP = ctx.composite.useGradient ? position.data() : NULL;
 
 	switch (format) {
 		case PF_PixelFormat_ARGB32:
@@ -382,23 +406,27 @@ PF_Err RenderGlow(
 						 inputP->height,
 						 glow,
 						 field.data(),
+						 positionP,
 						 scratch.data());
 
 	switch (format) {
 		case PF_PixelFormat_ARGB32:
 			CompositeWorld<PF_Pixel8>(inputP, outputP, offsetX, offsetY,
-									  layerOriginX, layerOriginY, field.data(), ctx,
+									  layerOriginX, layerOriginY,
+									  field.data(), positionP, ctx,
 									  static_cast<float>(PF_MAX_CHAN8), true);
 			break;
 		case PF_PixelFormat_ARGB64:
 			CompositeWorld<PF_Pixel16>(inputP, outputP, offsetX, offsetY,
-									   layerOriginX, layerOriginY, field.data(), ctx,
+									   layerOriginX, layerOriginY,
+									   field.data(), positionP, ctx,
 									   static_cast<float>(PF_MAX_CHAN16), true);
 			break;
 		case PF_PixelFormat_ARGB128:
 			/* 32 bpc keeps overrange values, so the result is not clamped. */
 			CompositeWorld<PF_PixelFloat>(inputP, outputP, offsetX, offsetY,
-										  layerOriginX, layerOriginY, field.data(), ctx,
+										  layerOriginX, layerOriginY,
+										  field.data(), positionP, ctx,
 										  1.0f, false);
 			break;
 		default:
@@ -538,6 +566,13 @@ ParamsSetup(
 						 0,
 						 IGFX_NOISE);
 
+	PF_ADD_POPUPX("Color Type",
+				  IGFX_COLOR_TYPE_COUNT,
+				  IGFX_COLOR_TYPE_DFLT,
+				  IGFX_COLOR_TYPE_ITEMS,
+				  0,
+				  IGFX_COLOR_TYPE);
+
 	AEFX_CLR_STRUCT(def);
 	PF_ADD_COLOR("Color",
 				 IGFX_COLOR_RED_DFLT,
@@ -553,6 +588,32 @@ ParamsSetup(
 						 PF_ValueDisplayFlag_PERCENT,
 						 0,
 						 IGFX_COLOR_OPACITY);
+
+	/* The next three do nothing while Color Type is Single Color. */
+	AEFX_CLR_STRUCT(def);
+	PF_ADD_COLOR("End Color",
+				 IGFX_END_COLOR_RED_DFLT,
+				 IGFX_END_COLOR_GREEN_DFLT,
+				 IGFX_END_COLOR_BLUE_DFLT,
+				 IGFX_END_COLOR);
+
+	PF_ADD_FLOAT_SLIDERX("Gradient Midpoint",
+						 IGFX_GRAD_MIDPOINT_MIN, IGFX_GRAD_MIDPOINT_MAX,
+						 IGFX_GRAD_MIDPOINT_MIN, IGFX_GRAD_MIDPOINT_MAX,
+						 IGFX_GRAD_MIDPOINT_DFLT,
+						 PF_Precision_TENTHS,
+						 PF_ValueDisplayFlag_PERCENT,
+						 0,
+						 IGFX_GRADIENT_MIDPOINT);
+
+	PF_ADD_FLOAT_SLIDERX("Gradient Smoothness",
+						 IGFX_GRAD_SMOOTH_MIN, IGFX_GRAD_SMOOTH_MAX,
+						 IGFX_GRAD_SMOOTH_MIN, IGFX_GRAD_SMOOTH_MAX,
+						 IGFX_GRAD_SMOOTH_DFLT,
+						 PF_Precision_TENTHS,
+						 PF_ValueDisplayFlag_PERCENT,
+						 0,
+						 IGFX_GRADIENT_SMOOTHNESS);
 
 	PF_ADD_POPUPX("Technique",
 				  IGFX_TECHNIQUE_COUNT,

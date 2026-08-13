@@ -33,6 +33,15 @@ inline float Lerp(float a, float b, float t)
 	return a + (b - a) * t;
 }
 
+inline Rgb LerpRgb(const Rgb &a, const Rgb &b, float t)
+{
+	Rgb out;
+	out.r = Lerp(a.r, b.r, t);
+	out.g = Lerp(a.g, b.g, t);
+	out.b = Lerp(a.b, b.b, t);
+	return out;
+}
+
 // ---------------------------------------------------------------------------
 // Exact Euclidean distance transform
 //

@@ -24,17 +24,38 @@ Matching the Inner Glow layer style, in the same order.
 | Blend Mode | 27 modes | Screen | The full After Effects list, Normal through Luminosity |
 | Opacity | 0–100% | 75 | Overall strength of the glow |
 | Noise | 0–100% | 0 | Dithers the glow; the pattern is pinned to the layer and does not crawl |
-| Color | swatch | 255, 255, 190 | Click for the full colour dialog, or use the eyedropper |
+| Color Type | Single Color / Gradient | Single Color | Whether the glow is one colour or a ramp across its falloff |
+| Color | swatch | 255, 255, 190 | The single colour, and the gradient's start |
 | Color Opacity | 0–100% | 100 | A second strength control, independent of Opacity |
+| End Color | swatch | 255, 128, 0 | The gradient's end. Ignored in Single Color mode |
+| Gradient Midpoint | 0–100% | 50 | Where Color hands off to End Color. Ignored in Single Color mode |
+| Gradient Smoothness | 0–100% | 100 | Eases the ramp between the two colours. Ignored in Single Color mode |
 | Technique | Softer / Precise | Softer | How the distance to the edge is measured |
 | Source | Center / Edge | Edge | Where the glow comes from |
 | Choke | 0–100% | 0 | How much of the reach stays fully solid before the falloff starts |
 | Size | 0–250 px | 5 | How far the glow reaches inward, in full-resolution pixels |
 | Range | 1–100% | 50 | Remaps the falloff curve; 50 is neutral |
 
-**Not included**, because they only exist to drive a gradient and this version is
-single-colour: Color Type, Colors, Gradient Smoothness, and Jitter. Jitter randomises
-gradient stops, so with a single colour it does nothing at all.
+The three gradient controls stay visible in Single Color mode but do nothing. After
+Effects can grey out parameters, but only via `PF_OutFlag_SEND_UPDATE_PARAMS_UI`,
+which would mean another out-flag to keep synchronised between the code and the PiPL.
+
+**Not included:** multi-stop gradients and Jitter. The layer style's gradient editor
+takes arbitrary stops, which needs a custom parameter UI built on arbitrary-data
+params and Drawbot. This uses two colours and a midpoint instead. Jitter only
+randomises stops within such a gradient, so it has nothing to act on here.
+
+### How the gradient maps
+
+The gradient is painted **across the glow's falloff**, not across the layer. Position
+0 is where the glow is at full strength and position 1 is where it has faded out, so:
+
+- **Source = Edge**: Color sits against the alpha edge, End Color at Size pixels in.
+- **Source = Center**: Color sits deep inside the shape, End Color out at the edge.
+
+**Range** decides which stretch of the falloff the glow occupies, so it carries the
+gradient with it. **Noise** dithers strength only and never changes which colour a
+pixel receives.
 
 ---
 
@@ -183,6 +204,8 @@ step.
 4. Apply it. You should see a soft glow hugging the inside of the layer's alpha edge.
 5. Push **Size** up to make the effect obvious, then try **Source > Center** to flip
    the glow to the middle of the shape.
+6. Switch **Color Type** to **Gradient** to ramp the glow from Color to End Color
+   across its falloff.
 
 The real point of this plug-in: drag it above or below other effects in the stack and
 watch the glow re-composite against whatever alpha exists at that point. The built-in
