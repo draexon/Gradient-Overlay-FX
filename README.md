@@ -1,5 +1,11 @@
 # Inner Glow Effect
 
+# FOR EDITORS 
+Windows: close After Effects, copy InnerGlowEffect.aex into ...\Support Files\Plug-ins\Effects\, approve the admin prompt, reopen AE.
+Mac: close After Effects, copy InnerGlowEffect.plugin into /Applications/Adobe After Effects <version>/Plug-ins/Effects/, run the xattr command above, reopen AE.
+Find it under Effect → Stylize → Inner Glow Effect.
+
+# FOR CONTRIBUTIORS
 After Effects' Inner Glow is a **Layer Style**, not an effect. That means two things
 get in the way:
 
