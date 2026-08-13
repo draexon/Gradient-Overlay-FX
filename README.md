@@ -1,6 +1,6 @@
 # Inner Glow Effect
 
-# FOR EDITORS 
+# FOR EDITORS [Download Effect](https://github.com/draexon/Inner-Glow-Effect/blob/main/dist/InnerGlowEffect.aex)
 1. Windows: close After Effects, copy InnerGlowEffect.aex into ...\Support Files\Plug-ins\Effects\, approve the admin prompt, reopen AE.
 2. Mac user command to run : xattr -dr com.apple.quarantine "/Applications/Adobe After Effects 2025/Plug-ins/Effects/InnerGlowEffect.plugin"
 3. Mac: close After Effects, copy InnerGlowEffect.plugin into /Applications/Adobe After Effects <version>/Plug-ins/Effects/, run the xattr command above, reopen AE.
