@@ -1,0 +1,21 @@
+# CMake build tree, including the generated PiPL .rr/.rrc/.rc intermediates
+build/
+
+# Visual Studio / Xcode local state
+.vs/
+*.user
+*.suo
+xcuserdata/
+*.xcworkspace
+
+# Build output
+*.aex
+*.plugin
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+
+# The After Effects SDK is never vendored here. It is located through
+# AE_SDK_PATH. See README.md.
